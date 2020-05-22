@@ -1,6 +1,7 @@
 !.gitignore
 .idea
 trello.ini
+project.ini
 
 /env/*
 !/env/Lib/
