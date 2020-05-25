@@ -14,6 +14,7 @@ import argparse
 import configparser
 import copy
 import json
+import os
 import plotly.figure_factory as ff
 import pytz
 import re
@@ -210,7 +211,8 @@ init(autoreset=True)  # Colorama reset color after printing in color
 
 # Configuration
 config = DictParser()
-config.read('project.ini')
+relative_path = os.path.dirname(os.path.realpath(__file__))
+config.read(relative_path + '\\project.ini')
 project_name = config['project']['name']
 project_tz = config['project']['timezone']
 list_colors = config.as_dict()['listColors']
@@ -392,12 +394,12 @@ if project_board:
 
         # Store data in a cache file
         data = json.dumps(new_cards)
-        with open('cache.json', 'w') as file:
+        with open(relative_path + '\\cache.json', 'w') as file:
             file.write(data)
 
     # We are using the cached data
     else:
-        with open('cache.json', 'r') as file:
+        with open(relative_path + '\\cache.json', 'r') as file:
             new_cards = json.load(file)
             if not len(new_cards):
                 try:

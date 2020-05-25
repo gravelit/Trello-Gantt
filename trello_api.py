@@ -1,12 +1,14 @@
 import requests
 import logging
+import os
 import configparser
 import json
 
 class TrelloAPI:
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read('trello.ini')
+        path_to_config = os.path.dirname(os.path.realpath(__file__))
+        config.read(path_to_config + '\\trello.ini')
 
         self.trello = 'https://api.trello.com'
         self.key = config['api']['key']
