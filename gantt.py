@@ -92,8 +92,7 @@ def update_dates(card):
             log('Error: Could not find blocking card', error=True)
             start = datetime.strptime(card['start']['date'], '%Y-%m-%d')
 
-    card['end']['date'] = (start + timedelta(days=card['estimated']['number'])).strftime('%Y-%m-%d')
-    card['start']['date'], card['end']['date'] = account_for_weekends(card['start']['date'], card['end']['date'])
+    card['start']['date'], card['end']['date'] = generate_weekday_dates(start, card['estimated']['number'])
 
 
 def move_dates(initial, amount):
@@ -155,35 +154,21 @@ def generate_xaxis_range(subplot):
     return [first_date.strftime('%Y-%m-%d'), last_date.strftime('%Y-%m-%d')]
 
 
-def account_for_weekends(start, end):
-    s = datetime.strptime(start, '%Y-%m-%d')
-    e = datetime.strptime(end, '%Y-%m-%d')
-
+def generate_weekday_dates(start, estimated):
     # If start date falls on a weekend, move it to monday
-    if s.weekday() == SATURDAY:
-        s = s + timedelta(days=2)
-        e = e + timedelta(days=2)
-    if s.weekday() == SUNDAY:
-        s = s + timedelta(days=1)
-        e = e + timedelta(days=1)
+    if start.weekday() == SATURDAY:
+        start = start + timedelta(days=2)
+    if start.weekday() == SUNDAY:
+        start = start + timedelta(days=1)
 
-    delta = e - s
-    weekend_count = 0
-    for single_date in (s + timedelta(days=n) for n in range(delta.days + 1)):
-        if single_date.weekday() == SATURDAY or single_date.weekday() == SUNDAY:
-            weekend_count += 1
-    weekend_count += (weekend_count % 2)
-    e = e + timedelta(weekend_count)
+    end = start
+    days = estimated
+    while days:
+        end = end + timedelta(days=1)
+        if (not end.weekday() == SATURDAY) and (not end.weekday() == SUNDAY):
+            days = days - 1
 
-    # There is a case where the end date is on a Thursday with one weekend between
-    # the start and end. In that case the end date will be moved to saturday, which is
-    # incorrect.
-    if e.weekday() == SATURDAY:
-        e = e + timedelta(days=2)
-    if e.weekday() == SUNDAY:
-        e = e + timedelta(days=1)
-
-    return s.strftime('%Y-%m-%d'), e.strftime('%Y-%m-%d')
+    return start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d')
 
 
 def sanitize_blocked(string):
