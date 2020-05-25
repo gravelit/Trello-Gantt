@@ -13,147 +13,148 @@ class TrelloAPI:
         self.token = config['api']['token']
 
 
+    # ------------------------------------------------------------------------------
+    def response_to_json(self, response):
+        raw = None
+        try:
+            raw = response.json()
+        except:
+            logging.error('Failed to parse JSON, request most likely invalid')
+        return raw
+
+
+    # ------------------------------------------------------------------------------
     def get_board_with_name(self, name):
-        request = '{url}/1/members/me/boards?key={key}&token={token}'.format(url=self.trello, key=self.key, token=self.token)
+        request = '{url}/1/members/me/boards?key={key}&token={token}'.format(url=self.trello,
+                                                                             key=self.key,
+                                                                             token=self.token)
         response = requests.get(url=request)
-        try:
-            raw = response.json()
-            for board in raw:
-                if board['name'] == name:
-                    return board
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
+        raw = self.response_to_json(response)
+        for board in raw:
+            if board['name'] == name:
+                return board
         return None
-    
-    
-    def get_board(self, id):
-        request = '{url}/1/boards/{board}?key={key}&token={token}'.format(url=self.trello, board=id, key=self.key, token=self.token)
-        response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
-    
-    
-    def get_all_cards(self, id):
-        request = '{url}/1/boards/{board}/cards?key={key}&token={token}'.format(url=self.trello, board=id, key=self.key, token=self.token)
-        response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
-    
-    
-    def get_list(self, id):
-        request = '{url}/1/lists/{list}?key={key}&token={token}'.format(url=self.trello, list=id, key=self.key, token=self.token)
-        response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
-    
-    
-    def get_all_attachments(self, id):
-        request = '{url}/1/cards/{card}/attachments?key={key}&token={token}'.format(url=self.trello, card=id, key=self.key, token=self.token)
-        response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
-    
-    
-    def get_custom_field_items(self, id):
-        request = '{url}/1/cards/{card}/customFieldItems?key={key}&token={token}'.format(url=self.trello, card=id, key=self.key, token=self.token)
-        response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
-    
-    
-    def get_custom_fields(self, id):
-        request = '{url}/1/boards/{board}/customFields?key={key}&token={token}'.format(url=self.trello, board=id, key=self.key, token=self.token)
-        response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
 
 
-    def get_card_checklists(self, id):
-        request = '{url}/1/cards/{card}/checklists?key={key}&token={token}'.format(url=self.trello, card=id, key=self.key, token=self.token)
+    # ------------------------------------------------------------------------------
+    def get_board(self, board_id):
+        request = '{url}/1/boards/{board}?key={key}&token={token}'.format(url=self.trello,
+                                                                          board=board_id,
+                                                                          key=self.key,
+                                                                          token=self.token)
         response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
+        return self.response_to_json(response)
 
 
-    def get_card(self, id):
-        request = '{url}/1/cards/{card}?key={key}&token={token}'.format(url=self.trello, card=id, key=self.key, token=self.token)
+    # ------------------------------------------------------------------------------
+    def get_all_cards(self, board_id):
+        request = '{url}/1/boards/{board}/cards?key={key}&token={token}'.format(url=self.trello,
+                                                                                board=board_id,
+                                                                                key=self.key,
+                                                                                token=self.token)
         response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
+        return self.response_to_json(response)
 
 
-    def get_boards_labels(self, id):
-        request = '{url}/1/boards/{board}/labels?key={key}&token={token}'.format(url=self.trello, board=id, key=self.key, token=self.token)
+    # ------------------------------------------------------------------------------
+    def get_list(self, list_id):
+        request = '{url}/1/lists/{list}?key={key}&token={token}'.format(url=self.trello,
+                                                                        list=list_id,
+                                                                        key=self.key,
+                                                                        token=self.token)
         response = requests.get(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
+        return self.response_to_json(response)
 
+
+    # ------------------------------------------------------------------------------
+    def get_all_attachments(self, card_id):
+        request = '{url}/1/cards/{card}/attachments?key={key}&token={token}'.format(url=self.trello,
+                                                                                    card=card_id,
+                                                                                    key=self.key,
+                                                                                    token=self.token)
+        response = requests.get(url=request)
+        return self.response_to_json(response)
+
+
+    # ------------------------------------------------------------------------------
+    def get_custom_field_items(self, card_id):
+        request = '{url}/1/cards/{card}/customFieldItems?key={key}&token={token}'.format(url=self.trello,
+                                                                                         card=card_id,
+                                                                                         key=self.key,
+                                                                                         token=self.token)
+        response = requests.get(url=request)
+        return self.response_to_json(response)
+
+
+    # ------------------------------------------------------------------------------
+    def get_custom_fields(self, board_id):
+        request = '{url}/1/boards/{board}/customFields?key={key}&token={token}'.format(url=self.trello,
+                                                                                       board=board_id,
+                                                                                       key=self.key,
+                                                                                       token=self.token)
+        response = requests.get(url=request)
+        return self.response_to_json(response)
+
+
+    # ------------------------------------------------------------------------------
+    def get_card_checklists(self, card_id):
+        request = '{url}/1/cards/{card}/checklists?key={key}&token={token}'.format(url=self.trello,
+                                                                                   card=card_id,
+                                                                                   key=self.key,
+                                                                                   token=self.token)
+        response = requests.get(url=request)
+        return self.response_to_json(response)
+
+
+    # ------------------------------------------------------------------------------
+    def get_card(self, card_id):
+        request = '{url}/1/cards/{card}?key={key}&token={token}'.format(url=self.trello,
+                                                                        card=card_id,
+                                                                        key=self.key,
+                                                                        token=self.token)
+        response = requests.get(url=request)
+        return self.response_to_json(response)
+
+
+    # ------------------------------------------------------------------------------
+    def get_boards_labels(self, board_id):
+        request = '{url}/1/boards/{board}/labels?key={key}&token={token}'.format(url=self.trello,
+                                                                                 board=board_id,
+                                                                                 key=self.key,
+                                                                                 token=self.token)
+        response = requests.get(url=request)
+        return self.response_to_json(response)
+
+
+    # ------------------------------------------------------------------------------
     def update_card_custom_field(self, card_id, field_id, value):
-        request = '{url}/1/cards/{card}/customField/{field}/item'.format(url=self.trello, card=card_id, field=field_id)
+        request = '{url}/1/cards/{card}/customField/{field}/item'.format(url=self.trello,
+                                                                         card=card_id,
+                                                                         field=field_id)
         headers = {'Content-Type': 'application/json'}
         data = json.dumps({'value' : value, 'key': self.key, 'token': self.token})
         response = requests.put(url=request, headers=headers, data=data)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
+        return self.response_to_json(response)
 
 
+    # ------------------------------------------------------------------------------
     def update_card(self, card_id, item, value):
-        request = '{url}/1/cards/{card}?key={key}&token={token}&{item}={value}'.format(url=self.trello, card=card_id, key=self.key, token=self.token, item=item, value=value)
+        request = '{url}/1/cards/{card}?key={key}&token={token}&{item}={value}'.format(url=self.trello,
+                                                                                       card=card_id,
+                                                                                       key=self.key,
+                                                                                       token=self.token,
+                                                                                       item=item,
+                                                                                       value=value)
         response = requests.put(url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
+        return self.response_to_json(response)
 
-    
-    def delete_attachment(self, card, id):
-        request = '{url}/1/cards/{card}/attachments/{attachment}?key={key}&token={token}'.format(url=self.trello, card=card, attachment=id, key=self.key, token=self.token)
+
+    # ------------------------------------------------------------------------------
+    def delete_attachment(self, card_id, attachment_id):
+        request = '{url}/1/cards/{card}/attachments/{attachment}?key={key}&token={token}'.format(url=self.trello,
+                                                                                                 card=card_id,
+                                                                                                 attachment=attachment_id,
+                                                                                                 key=self.key,
+                                                                                                 token=self.token)
         response = requests.request(method='DELETE', url=request)
-        raw = None
-        try:
-            raw = response.json()
-        except:
-            logging.error('Failed to parse JSON, request most likely invalid')
-        return raw
+        return self.response_to_json(response)

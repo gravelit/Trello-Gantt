@@ -226,7 +226,7 @@ init(autoreset=True)  # Colorama reset color after printing in color
 # Configuration
 config = DictParser()
 config.read('project.ini')
-project = config['project']['name']
+project_name = config['project']['name']
 project_tz = config['project']['timezone']
 list_colors = config.as_dict()['listColors']
 
@@ -240,7 +240,7 @@ args = parser.parse_args()
 # Initialize the API, and grab the project board
 log('Requesting project board...')
 api = trello_api.TrelloAPI()
-project_board = api.get_board_with_name(project)
+project_board = api.get_board_with_name(project_name)
 
 # Only start processing if the request was a success
 if project_board:
@@ -534,7 +534,7 @@ if project_board:
 
     # Add additional annotations
     log('Applying additional annotations...')
-    annotations = ['{project} Gantt Chart'.format(project=project),
+    annotations = ['{project} Gantt Chart'.format(project=project_name),
                    'Estimated Completion Date: {}'.format(estimated_end_date),
                    'Remaining Time: {}'.format(time_remaining),
                    'Percentage Complete: {}'.format(percent_complete),
