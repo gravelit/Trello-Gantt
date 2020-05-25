@@ -2,6 +2,7 @@
 .idea
 trello.ini
 project.ini
+cache.json
 
 /env/*
 !/env/Lib/

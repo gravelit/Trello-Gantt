@@ -1,6 +1,7 @@
 import requests
 import logging
 import configparser
+import json
 
 class TrelloAPI:
     def __init__(self):
@@ -102,6 +103,17 @@ class TrelloAPI:
         return raw
 
 
+    def get_card(self, id):
+        request = '{url}/1/cards/{card}?key={key}&token={token}'.format(url=self.trello, card=id, key=self.key, token=self.token)
+        response = requests.get(url=request)
+        raw = None
+        try:
+            raw = response.json()
+        except:
+            logging.error('Failed to parse JSON, request most likely invalid')
+        return raw
+
+
     def get_boards_labels(self, id):
         request = '{url}/1/boards/{board}/labels?key={key}&token={token}'.format(url=self.trello, board=id, key=self.key, token=self.token)
         response = requests.get(url=request)
@@ -111,7 +123,30 @@ class TrelloAPI:
         except:
             logging.error('Failed to parse JSON, request most likely invalid')
         return raw
-    
+
+    def update_card_custom_field(self, card_id, field_id, value):
+        request = '{url}/1/cards/{card}/customField/{field}/item'.format(url=self.trello, card=card_id, field=field_id)
+        headers = {'Content-Type': 'application/json'}
+        data = json.dumps({'value' : value, 'key': self.key, 'token': self.token})
+        response = requests.put(url=request, headers=headers, data=data)
+        raw = None
+        try:
+            raw = response.json()
+        except:
+            logging.error('Failed to parse JSON, request most likely invalid')
+        return raw
+
+
+    def update_card(self, card_id, item, value):
+        request = '{url}/1/cards/{card}?key={key}&token={token}&{item}={value}'.format(url=self.trello, card=card_id, key=self.key, token=self.token, item=item, value=value)
+        response = requests.put(url=request)
+        raw = None
+        try:
+            raw = response.json()
+        except:
+            logging.error('Failed to parse JSON, request most likely invalid')
+        return raw
+
     
     def delete_attachment(self, card, id):
         request = '{url}/1/cards/{card}/attachments/{attachment}?key={key}&token={token}'.format(url=self.trello, card=card, attachment=id, key=self.key, token=self.token)
